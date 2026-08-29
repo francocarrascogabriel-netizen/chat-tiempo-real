@@ -1,11 +1,301 @@
 /*
-    Estilo general de cada mensaje.
+    ======================================================
+    ESTILO GENERAL
+    ======================================================
+
+    Utilizamos una paleta oscura para reducir el brillo
+    general de la interfaz y hacer el chat más cómodo
+    para utilizar durante períodos prolongados.
 */
+
+body {
+    background-color: #111827;
+    color: #e5e7eb;
+    min-height: 100vh;
+}
+
+
+/*
+    ======================================================
+    TARJETAS
+    ======================================================
+
+    Sobrescribimos algunos estilos de Bootstrap
+    para adaptar las tarjetas al tema oscuro.
+*/
+
+.card {
+    background-color: #1f2937;
+    color: #e5e7eb;
+
+    border: 1px solid #374151;
+
+    border-radius: 12px;
+}
+
+
+/*
+    Encabezado de las tarjetas.
+*/
+.card-header {
+    background-color: #1f2937;
+    color: #f9fafb;
+
+    border-bottom: 1px solid #374151;
+}
+
+
+/*
+    Pie de tarjeta donde está el formulario
+    para escribir mensajes.
+*/
+.card-footer {
+    background-color: #1f2937;
+
+    border-top: 1px solid #374151;
+}
+
+
+/*
+    ======================================================
+    ENCABEZADO PRINCIPAL DEL CHAT
+    ======================================================
+*/
+
+.chat-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+
+/*
+    Títulos principales.
+*/
+
+h1,
+h2 {
+    color: #f9fafb;
+}
+
+
+/*
+    Texto secundario.
+
+    Bootstrap normalmente usa un gris pensado
+    para fondos claros, así que lo ajustamos.
+*/
+
+.text-secondary {
+    color: #9ca3af !important;
+}
+
+
+/*
+    ======================================================
+    ÁREA DE MENSAJES
+    ======================================================
+*/
+
+.chat-mensajes {
+    min-height: 450px;
+
+    max-height: 450px;
+
+    overflow-y: auto;
+
+    background-color: #111827;
+
+    padding: 16px;
+}
+
+
+/*
+    Personalizamos la barra de desplazamiento
+    para que combine con el tema oscuro.
+*/
+
+.chat-mensajes::-webkit-scrollbar {
+    width: 8px;
+}
+
+
+.chat-mensajes::-webkit-scrollbar-track {
+    background-color: #111827;
+}
+
+
+.chat-mensajes::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+
+    border-radius: 10px;
+}
+
+
+.chat-mensajes::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+}
+
+
+/*
+    ======================================================
+    USUARIOS CONECTADOS
+    ======================================================
+*/
+
+.list-group-item {
+    background-color: #1f2937;
+
+    color: #e5e7eb;
+
+    border-color: #374151;
+}
+
+
+/*
+    ======================================================
+    INPUTS
+    ======================================================
+*/
+
+.form-control {
+    background-color: #111827;
+
+    color: #f9fafb;
+
+    border: 1px solid #4b5563;
+}
+
+
+/*
+    Texto que aparece dentro del input
+    antes de escribir.
+*/
+
+.form-control::placeholder {
+    color: #6b7280;
+}
+
+
+/*
+    Estilo cuando hacemos clic sobre un input.
+*/
+
+.form-control:focus {
+    background-color: #111827;
+
+    color: #f9fafb;
+
+    border-color: #60a5fa;
+
+    box-shadow: 0 0 0 0.15rem rgba(96, 165, 250, 0.20);
+}
+
+
+/*
+    ======================================================
+    BOTONES
+    ======================================================
+
+    Cambiamos ligeramente el azul predeterminado
+    de Bootstrap para combinar mejor con el diseño.
+*/
+
+.btn-primary {
+    background-color: #2563eb;
+
+    border-color: #2563eb;
+}
+
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+
+    border-color: #1d4ed8;
+}
+
+
+/*
+    ======================================================
+    EVENTOS DEL CHAT
+    ======================================================
+
+    Los eventos se mantienen diferenciados,
+    pero utilizando colores suaves para evitar
+    contrastes demasiado fuertes.
+*/
+
+.evento-chat {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 10px 12px;
+
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+}
+
+
+/*
+    Usuario que ingresa al chat.
+*/
+
+.evento-ingreso {
+    background-color: #132e25;
+
+    border-left: 4px solid #22c55e;
+
+    color: #d1fae5;
+}
+
+
+/*
+    Usuario que abandona el chat.
+*/
+
+.evento-salida {
+    background-color: #3b1d24;
+
+    border-left: 4px solid #ef4444;
+
+    color: #fee2e2;
+}
+
+
+/*
+    Hora mostrada dentro de los eventos.
+*/
+
+.hora-evento {
+    margin-left: 15px;
+
+    color: #9ca3af;
+
+    white-space: nowrap;
+}
+
+
+/*
+    ======================================================
+    MENSAJES
+    ======================================================
+*/
+
 .mensaje-chat {
     width: fit-content;
+
     max-width: 75%;
 
     padding: 10px 14px;
+
     margin-bottom: 10px;
 
     border-radius: 12px;
@@ -13,41 +303,47 @@
 
 
 /*
-    Mensajes enviados por el usuario actual.
+    Mensaje enviado por nosotros.
 
-    margin-left: auto los desplaza
-    hacia el lado derecho.
+    Se coloca hacia la derecha.
 */
+
 .mensaje-propio {
     margin-left: auto;
 
-    background-color: #d1e7dd;
+    background-color: #1e3a5f;
 
-    border: 1px solid #badbcc;
+    border: 1px solid #2563eb;
+
+    color: #eff6ff;
 }
 
 
 /*
-    Mensajes enviados por otros usuarios.
+    Mensaje enviado por otro usuario.
 
-    Aparecen del lado izquierdo.
+    Se coloca hacia la izquierda.
 */
+
 .mensaje-otro {
     margin-right: auto;
 
-    background-color: #e9ecef;
+    background-color: #374151;
 
-    border: 1px solid #dee2e6;
+    border: 1px solid #4b5563;
+
+    color: #f3f4f6;
 }
 
 
 /*
-    Cabecera del mensaje.
+    Cabecera de cada mensaje.
 
     Contiene:
-    - nombre;
+    - nombre del usuario;
     - hora.
 */
+
 .mensaje-encabezado {
     display: flex;
 
@@ -60,12 +356,61 @@
 
 
 /*
-    Hora de cada mensaje.
+    Hora mostrada en cada mensaje.
 */
+
 .hora-mensaje {
-    color: #6c757d;
+    color: #9ca3af;
 
     font-size: 0.75rem;
 
     white-space: nowrap;
+}
+
+
+/*
+    ======================================================
+    ESTADO DE CONEXIÓN
+    ======================================================
+
+    Dejamos los badges de Bootstrap,
+    pero suavizamos ligeramente sus bordes.
+*/
+
+.badge {
+    border-radius: 6px;
+
+    font-weight: 500;
+}
+
+
+/*
+    ======================================================
+    DISEÑO RESPONSIVE
+    ======================================================
+
+    En dispositivos pequeños reducimos
+    la altura del área del chat.
+*/
+
+@media (max-width: 768px) {
+
+    .chat-mensajes {
+        min-height: 350px;
+
+        max-height: 350px;
+    }
+
+
+    /*
+        En pantallas pequeñas permitimos que
+        el encabezado acomode mejor sus elementos.
+    */
+
+    .chat-header {
+        gap: 20px;
+
+        align-items: flex-start;
+    }
+
 }
