@@ -2,7 +2,7 @@
 const express = require("express");
 
 // Importamos el módulo HTTP de Node.js.
-// Socket.IO funcionará sobre este servidor HTTP.
+// Socket.IO funcionará utilizando este servidor HTTP.
 const http = require("http");
 
 // Importamos Server desde Socket.IO.
@@ -15,24 +15,24 @@ const app = express();
 // Creamos el servidor HTTP.
 const server = http.createServer(app);
 
-// Conectamos Socket.IO con el servidor HTTP.
+// Asociamos Socket.IO al servidor HTTP.
 const io = new Server(server);
 
-// Puerto donde funcionará nuestro chat.
+// Puerto donde funcionará nuestra aplicación.
 const PORT = 3000;
 
 
-// Indicamos que Express debe servir los archivos
-// que se encuentran dentro de la carpeta public.
+// Express servirá todos los archivos que se encuentren
+// dentro de la carpeta public.
 app.use(express.static("public"));
 
 
 
 /*
-    Map donde guardamos los usuarios conectados.
+    Map donde almacenamos los usuarios conectados.
 
-    La clave será socket.id y el valor será
-    un objeto con los datos del usuario.
+    Usamos socket.id como clave porque es único
+    para cada conexión.
 
     Ejemplo:
 
@@ -46,32 +46,30 @@ const usuarios = new Map();
 
 
 /*
-    Esta función obtiene la fecha y hora actual.
+    Función que obtiene la fecha y hora actual.
 
-    La utilizaremos para registrar los eventos
-    de ingreso y desconexión.
+    La utilizamos para mensajes, ingresos
+    y desconexiones.
 */
 function obtenerFechaHora() {
 
+    // Creamos un objeto con la fecha y hora actual.
     const ahora = new Date();
 
-    /*
-        Formateamos la fecha utilizando
-        configuración regional argentina.
-    */
+
+    // Formateamos la fecha para Argentina.
     const fecha = ahora.toLocaleDateString("es-AR");
 
-    /*
-        Obtenemos la hora con horas, minutos
-        y segundos.
-    */
+
+    // Obtenemos hora, minutos y segundos.
     const hora = ahora.toLocaleTimeString("es-AR", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit"
     });
 
-    // Devolvemos ambos valores en un objeto.
+
+    // Devolvemos ambos valores.
     return {
         fecha,
         hora
@@ -80,37 +78,52 @@ function obtenerFechaHora() {
 
 
 
-// Socket.IO ejecuta esta función cada vez
-// que un navegador se conecta al servidor.
+// ======================================================
+// CONEXIÓN DE SOCKET.IO
+// ======================================================
+
+/*
+    Este evento se ejecuta automáticamente
+    cuando un navegador se conecta al servidor.
+*/
 io.on("connection", (socket) => {
 
     console.log("Nueva conexión:", socket.id);
 
 
 
-    // =====================================================
+    // ==================================================
     // REGISTRO DEL USUARIO
-    // =====================================================
+    // ==================================================
 
+    /*
+        Escuchamos el evento que envía el frontend
+        cuando una persona ingresa su nombre.
+    */
     socket.on("registrarUsuario", (nombre) => {
 
-        // Eliminamos espacios sobrantes.
+        // Quitamos espacios innecesarios.
         const nombreLimpio = nombre.trim();
 
-        // Si el nombre está vacío, detenemos el proceso.
+
+        // No permitimos nombres vacíos.
         if (nombreLimpio === "") {
             return;
         }
 
 
-        // Creamos el objeto que representa al usuario.
+        // Creamos el objeto del usuario.
         const usuario = {
+
+            // ID único generado por Socket.IO.
             id: socket.id,
+
+            // Nombre elegido por la persona.
             nombre: nombreLimpio
         };
 
 
-        // Guardamos al usuario usando socket.id como clave.
+        // Guardamos al usuario en nuestro Map.
         usuarios.set(socket.id, usuario);
 
 
@@ -118,7 +131,7 @@ io.on("connection", (socket) => {
         const momento = obtenerFechaHora();
 
 
-        // Mostramos el evento en la consola del servidor.
+        // Registramos el ingreso en consola.
         console.log(
             `[${momento.fecha} ${momento.hora}] ` +
             `Ingresó ${usuario.nombre} - ID: ${usuario.id}`
@@ -126,27 +139,27 @@ io.on("connection", (socket) => {
 
 
         /*
-            Confirmamos solamente a este navegador
-            que el registro fue exitoso.
+            Confirmamos solamente a este usuario
+            que su registro fue correcto.
         */
         socket.emit("usuarioRegistrado", usuario);
 
 
         /*
-            Informamos a TODOS los clientes
-            que un usuario ingresó al chat.
+            Informamos a todos que alguien
+            ingresó al chat.
         */
         io.emit("usuarioIngreso", {
+
             nombre: usuario.nombre,
+
             fecha: momento.fecha,
+
             hora: momento.hora
         });
 
 
-        /*
-            Actualizamos la lista de usuarios
-            para todos los navegadores.
-        */
+        // Actualizamos la lista de conectados.
         io.emit(
             "actualizarUsuarios",
             Array.from(usuarios.values())
@@ -156,16 +169,108 @@ io.on("connection", (socket) => {
 
 
 
-    // =====================================================
-    // DESCONEXIÓN DEL USUARIO
-    // =====================================================
+    // ==================================================
+    // ENVÍO DE MENSAJES
+    // ==================================================
 
     /*
-        Este evento es generado automáticamente
-        por Socket.IO cuando una conexión termina.
+        Escuchamos el evento "enviarMensaje"
+        enviado desde script.js.
+    */
+    socket.on("enviarMensaje", (texto) => {
 
-        "reason" contiene el motivo detectado
-        por Socket.IO.
+        /*
+            Buscamos qué usuario corresponde
+            al socket que envió el mensaje.
+
+            De esta manera NO confiamos en que
+            el navegador nos diga quién es.
+
+            El servidor identifica al usuario
+            mediante socket.id.
+        */
+        const usuario = usuarios.get(socket.id);
+
+
+        // Si el usuario no está registrado,
+        // no permitimos enviar mensajes.
+        if (!usuario) {
+            return;
+        }
+
+
+        /*
+            Limpiamos espacios al principio
+            y al final del mensaje.
+        */
+        const mensajeLimpio = texto.trim();
+
+
+        // Evitamos mensajes vacíos.
+        if (mensajeLimpio === "") {
+            return;
+        }
+
+
+        // Obtenemos fecha y hora del mensaje.
+        const momento = obtenerFechaHora();
+
+
+        /*
+            Creamos un objeto con toda
+            la información del mensaje.
+        */
+        const datosMensaje = {
+
+            // ID del usuario que envió el mensaje.
+            idUsuario: usuario.id,
+
+            // Nombre del usuario.
+            nombre: usuario.nombre,
+
+            // Contenido del mensaje.
+            texto: mensajeLimpio,
+
+            // Fecha del mensaje.
+            fecha: momento.fecha,
+
+            // Hora del mensaje.
+            hora: momento.hora
+        };
+
+
+        /*
+            Mostramos también el mensaje
+            en la consola del servidor.
+        */
+        console.log(
+            `[${momento.fecha} ${momento.hora}] ` +
+            `${usuario.nombre}: ${mensajeLimpio}`
+        );
+
+
+        /*
+            Enviamos el mensaje a TODOS
+            los usuarios conectados.
+
+            Incluye también al usuario
+            que originalmente lo envió.
+        */
+        io.emit("nuevoMensaje", datosMensaje);
+
+    });
+
+
+
+    // ==================================================
+    // DESCONEXIÓN DEL USUARIO
+    // ==================================================
+
+    /*
+        Socket.IO ejecuta automáticamente este evento
+        cuando una conexión termina.
+
+        reason contiene el motivo de desconexión.
     */
     socket.on("disconnect", (reason) => {
 
@@ -173,21 +278,20 @@ io.on("connection", (socket) => {
         const usuario = usuarios.get(socket.id);
 
 
-        /*
-            Puede existir una conexión que todavía
-            no haya registrado un nombre.
-
-            Por eso verificamos primero que el usuario exista.
-        */
+        // Solo continuamos si estaba registrado.
         if (usuario) {
 
-            // Obtenemos fecha y hora de la desconexión.
+            // Obtenemos fecha y hora.
             const momento = obtenerFechaHora();
 
 
             /*
-                Mostramos toda la información solicitada
-                en la consola del servidor.
+                Registramos:
+                - fecha;
+                - hora;
+                - usuario;
+                - ID;
+                - motivo.
             */
             console.log(
                 `[${momento.fecha} ${momento.hora}] ` +
@@ -197,24 +301,24 @@ io.on("connection", (socket) => {
             );
 
 
-            // Eliminamos al usuario del Map.
+            // Eliminamos al usuario de la lista.
             usuarios.delete(socket.id);
 
 
-            /*
-                Informamos a los usuarios que continúan
-                conectados que esta persona abandonó el chat.
-            */
+            // Informamos la salida a los demás.
             io.emit("usuarioSalida", {
+
                 nombre: usuario.nombre,
+
                 fecha: momento.fecha,
+
                 hora: momento.hora
             });
 
         }
 
 
-        // Actualizamos nuevamente la lista de conectados.
+        // Actualizamos la lista de usuarios conectados.
         io.emit(
             "actualizarUsuarios",
             Array.from(usuarios.values())
@@ -226,7 +330,11 @@ io.on("connection", (socket) => {
 
 
 
-// Iniciamos el servidor.
+// ======================================================
+// INICIO DEL SERVIDOR
+// ======================================================
+
+// Ponemos el servidor a escuchar en el puerto 3000.
 server.listen(PORT, () => {
 
     console.log(

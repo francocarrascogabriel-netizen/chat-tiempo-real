@@ -1,112 +1,71 @@
 /*
-    Estilo general de toda la página.
-    Utilizamos un fondo suave para diferenciar
-    la aplicación del contenido de las tarjetas.
+    Estilo general de cada mensaje.
 */
-body {
-    background-color: #f4f6f9;
+.mensaje-chat {
+    width: fit-content;
+    max-width: 75%;
+
+    padding: 10px 14px;
+    margin-bottom: 10px;
+
+    border-radius: 12px;
 }
 
 
 /*
-    Encabezado principal del chat.
+    Mensajes enviados por el usuario actual.
 
-    Utilizamos flex para colocar correctamente
-    los elementos que puedan agregarse en el futuro.
+    margin-left: auto los desplaza
+    hacia el lado derecho.
 */
-.chat-header {
+.mensaje-propio {
+    margin-left: auto;
+
+    background-color: #d1e7dd;
+
+    border: 1px solid #badbcc;
+}
+
+
+/*
+    Mensajes enviados por otros usuarios.
+
+    Aparecen del lado izquierdo.
+*/
+.mensaje-otro {
+    margin-right: auto;
+
+    background-color: #e9ecef;
+
+    border: 1px solid #dee2e6;
+}
+
+
+/*
+    Cabecera del mensaje.
+
+    Contiene:
+    - nombre;
+    - hora.
+*/
+.mensaje-encabezado {
     display: flex;
+
     justify-content: space-between;
-    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 4px;
 }
 
 
 /*
-    Área donde aparecerán los mensajes.
-
-    La altura mínima mantiene una zona de chat visible
-    aunque todavía no existan mensajes.
+    Hora de cada mensaje.
 */
-.chat-mensajes {
-    min-height: 450px;
-
-    /* Limitamos también la altura máxima del área. */
-    max-height: 450px;
-
-    /*
-        Si aparecen muchos mensajes,
-        se habilitará automáticamente
-        una barra de desplazamiento vertical.
-    */
-    overflow-y: auto;
-
-    /*
-        Fondo ligeramente diferente
-        para separar visualmente los mensajes.
-    */
-    background-color: #ffffff;
-}
-
-
-/*
-    En pantallas pequeñas reducimos la altura
-    del área de mensajes para mejorar la visualización.
-*/
-@media (max-width: 768px) {
-
-    .chat-mensajes {
-        min-height: 350px;
-        max-height: 350px;
-    }
-
-}
-
-/*
-    Estilo común utilizado para los eventos
-    informativos del chat.
-*/
-.evento-chat {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 10px 12px;
-    margin-bottom: 8px;
-
-    border-radius: 8px;
-
-    font-size: 0.9rem;
-}
-
-
-/*
-    Evento utilizado cuando un usuario
-    entra al chat.
-*/
-.evento-ingreso {
-    background-color: #e8f5e9;
-    border-left: 4px solid #198754;
-}
-
-
-/*
-    Evento utilizado cuando un usuario
-    abandona el chat.
-*/
-.evento-salida {
-    background-color: #f8d7da;
-    border-left: 4px solid #dc3545;
-}
-
-
-/*
-    Estilo de la hora que aparece
-    al lado de cada evento.
-*/
-.hora-evento {
-    margin-left: 15px;
-
+.hora-mensaje {
     color: #6c757d;
+
+    font-size: 0.75rem;
 
     white-space: nowrap;
 }
