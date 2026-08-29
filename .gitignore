@@ -1,0 +1,8 @@
+# Dependencias instaladas por Node.js
+node_modules/
+
+# Archivos temporales o de sistema
+.DS_Store
+
+# Variables de entorno, si luego fueran necesarias
+.env
