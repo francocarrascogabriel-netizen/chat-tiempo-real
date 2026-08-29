@@ -60,3 +60,53 @@ body {
     }
 
 }
+
+/*
+    Estilo común utilizado para los eventos
+    informativos del chat.
+*/
+.evento-chat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 12px;
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+}
+
+
+/*
+    Evento utilizado cuando un usuario
+    entra al chat.
+*/
+.evento-ingreso {
+    background-color: #e8f5e9;
+    border-left: 4px solid #198754;
+}
+
+
+/*
+    Evento utilizado cuando un usuario
+    abandona el chat.
+*/
+.evento-salida {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+}
+
+
+/*
+    Estilo de la hora que aparece
+    al lado de cada evento.
+*/
+.hora-evento {
+    margin-left: 15px;
+
+    color: #6c757d;
+
+    white-space: nowrap;
+}
