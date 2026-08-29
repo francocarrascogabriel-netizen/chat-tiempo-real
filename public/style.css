@@ -1,0 +1,62 @@
+/*
+    Estilo general de toda la página.
+    Utilizamos un fondo suave para diferenciar
+    la aplicación del contenido de las tarjetas.
+*/
+body {
+    background-color: #f4f6f9;
+}
+
+
+/*
+    Encabezado principal del chat.
+
+    Utilizamos flex para colocar correctamente
+    los elementos que puedan agregarse en el futuro.
+*/
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/*
+    Área donde aparecerán los mensajes.
+
+    La altura mínima mantiene una zona de chat visible
+    aunque todavía no existan mensajes.
+*/
+.chat-mensajes {
+    min-height: 450px;
+
+    /* Limitamos también la altura máxima del área. */
+    max-height: 450px;
+
+    /*
+        Si aparecen muchos mensajes,
+        se habilitará automáticamente
+        una barra de desplazamiento vertical.
+    */
+    overflow-y: auto;
+
+    /*
+        Fondo ligeramente diferente
+        para separar visualmente los mensajes.
+    */
+    background-color: #ffffff;
+}
+
+
+/*
+    En pantallas pequeñas reducimos la altura
+    del área de mensajes para mejorar la visualización.
+*/
+@media (max-width: 768px) {
+
+    .chat-mensajes {
+        min-height: 350px;
+        max-height: 350px;
+    }
+
+}
