@@ -8,38 +8,30 @@
     <!-- Permite utilizar correctamente caracteres como ñ, á, é, etc. -->
     <meta charset="UTF-8">
 
-    <!-- Hace que la página se adapte correctamente a celulares y distintas pantallas -->
+    <!-- Hace que la página se adapte correctamente a distintos tamaños de pantalla -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Título que aparecerá en la pestaña del navegador -->
+    <!-- Título que aparece en la pestaña del navegador -->
     <title>Chat en tiempo real</title>
 
     <!--
         Bootstrap 5.
-        Se carga desde CDN para utilizar sus clases de diseño,
-        botones, formularios, columnas, tarjetas, etc.
+        Lo utilizamos para formularios, botones, tarjetas,
+        columnas y otros elementos visuales.
     -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
-    <!--
-        Nuestra hoja de estilos personalizada.
-        Se carga después de Bootstrap para poder agregar
-        o modificar nuestros propios estilos.
-    -->
+    <!-- Hoja de estilos propia del proyecto -->
     <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-    <!--
-        Contenedor principal de toda la aplicación.
-        Bootstrap usa "container" para mantener el contenido
-        centrado y con márgenes adecuados.
-    -->
+    <!-- Contenedor principal de toda la aplicación -->
     <main class="container py-5">
 
 
@@ -48,29 +40,20 @@
         <!-- ===================================================== -->
 
         <!--
-            Esta sección será lo primero que verá el usuario.
-            Tendrá que escribir su nombre antes de entrar al chat.
+            Esta es la primera pantalla que ve el usuario.
+            Debe ingresar un nombre antes de acceder al chat.
         -->
         <section id="pantallaIngreso">
 
-            <!--
-                row y justify-content-center permiten centrar
-                horizontalmente la tarjeta.
-            -->
             <div class="row justify-content-center">
 
-                <!--
-                    En pantallas medianas la tarjeta ocupará
-                    aproximadamente la mitad del ancho disponible.
-                -->
                 <div class="col-md-6 col-lg-5">
 
-                    <!-- Tarjeta visual de Bootstrap -->
                     <div class="card shadow">
 
                         <div class="card-body p-4">
 
-                            <!-- Título de la aplicación -->
+                            <!-- Título principal -->
                             <h1 class="text-center mb-3">
                                 Chat en tiempo real
                             </h1>
@@ -82,14 +65,13 @@
 
 
                             <!--
-                                Formulario utilizado para ingresar al usuario.
-
-                                Más adelante JavaScript capturará el evento submit
-                                y enviará el nombre al servidor mediante Socket.IO.
+                                Formulario de ingreso.
+                                JavaScript evita que recargue la página
+                                y envía el nombre al servidor.
                             -->
                             <form id="formIngreso">
 
-                                <!-- Etiqueta asociada al campo nombreUsuario -->
+                                <!-- Etiqueta del campo de usuario -->
                                 <label
                                     for="nombreUsuario"
                                     class="form-label"
@@ -97,23 +79,8 @@
                                     Nombre de usuario
                                 </label>
 
-                                <!--
-                                    Campo donde el usuario escribe su nombre.
 
-                                    id:
-                                    JavaScript podrá localizarlo fácilmente.
-
-                                    maxlength:
-                                    Limitamos el nombre a 30 caracteres.
-
-                                    required:
-                                    El navegador no permitirá enviar
-                                    el formulario vacío.
-
-                                    autocomplete="off":
-                                    Evita algunas sugerencias automáticas
-                                    del navegador.
-                                -->
+                                <!-- Campo donde se escribe el nombre -->
                                 <input
                                     type="text"
                                     id="nombreUsuario"
@@ -124,12 +91,8 @@
                                     required
                                 >
 
-                                <!--
-                                    type="submit" provoca el envío del formulario.
 
-                                    En la siguiente etapa JavaScript interceptará
-                                    ese evento para evitar que se recargue la página.
-                                -->
+                                <!-- Botón para entrar al chat -->
                                 <button
                                     type="submit"
                                     class="btn btn-primary w-100 mt-3"
@@ -156,51 +119,83 @@
         <!-- ===================================================== -->
 
         <!--
-            Esta sección comienza oculta gracias a la clase d-none.
+            Comienza oculta utilizando d-none.
 
-            Cuando el usuario se registre correctamente,
-            JavaScript quitará esta clase y mostrará el chat.
+            JavaScript la mostrará cuando el servidor
+            confirme que el usuario quedó registrado.
         -->
         <section id="pantallaChat" class="d-none">
 
-            <!-- Encabezado superior del chat -->
+
+            <!-- ================================================= -->
+            <!-- ENCABEZADO DEL CHAT                               -->
+            <!-- ================================================= -->
+
+            <!--
+                Mostramos:
+                - nombre del usuario actual;
+                - ID parcial;
+                - estado de conexión;
+                - cantidad de usuarios conectados.
+            -->
             <div class="chat-header mb-3">
 
+                <!-- Información del usuario actual -->
                 <div>
+
                     <h2 class="mb-1">
                         Chat en tiempo real
                     </h2>
 
-                    <!--
-                        Acá mostraremos el nombre del usuario actual.
-
-                        Ejemplo:
-                        Usuario actual: Franco
-                    -->
-                    <p class="mb-0">
+                    <p class="mb-1">
                         Usuario actual:
                         <strong id="usuarioActual">---</strong>
                     </p>
+
+
+                    <!--
+                        JavaScript cambia este indicador
+                        cuando Socket.IO conecta o desconecta.
+                    -->
+                    <span
+                        id="estadoConexion"
+                        class="badge text-bg-success"
+                    >
+                        Conectado
+                    </span>
+
+                </div>
+
+
+                <!-- Cantidad total de usuarios conectados -->
+                <div class="text-end">
+
+                    <span class="text-secondary">
+                        Usuarios conectados
+                    </span>
+
+                    <div
+                        id="contadorUsuarios"
+                        class="fs-4 fw-bold"
+                    >
+                        0
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!--
-                Bootstrap divide esta zona en columnas.
 
-                Izquierda:
-                usuarios conectados.
+            <!-- ================================================= -->
+            <!-- CUERPO PRINCIPAL                                  -->
+            <!-- ================================================= -->
 
-                Derecha:
-                mensajes y eventos del chat.
-            -->
             <div class="row g-3">
 
 
                 <!-- ================================================= -->
-                <!-- USUARIOS CONECTADOS                               -->
+                <!-- LISTA DE USUARIOS                                 -->
                 <!-- ================================================= -->
 
                 <div class="col-md-4 col-lg-3">
@@ -218,10 +213,8 @@
                         <div class="card-body">
 
                             <!--
-                                Lista donde JavaScript agregará
-                                los usuarios conectados.
-
-                                Inicialmente está vacía.
+                                JavaScript cargará dinámicamente
+                                los usuarios que están conectados.
                             -->
                             <ul
                                 id="listaUsuarios"
@@ -238,21 +231,21 @@
 
 
                 <!-- ================================================= -->
-                <!-- ÁREA DE MENSAJES                                  -->
+                <!-- MENSAJES Y EVENTOS                                -->
                 <!-- ================================================= -->
 
                 <div class="col-md-8 col-lg-9">
 
                     <div class="card shadow-sm">
 
+
                         <!--
-                            Contenedor donde aparecerán:
+                            Dentro de este contenedor aparecerán:
 
                             - mensajes;
-                            - ingreso de usuarios;
+                            - ingresos;
                             - desconexiones;
-                            - fecha y hora;
-                            - otros eventos del chat.
+                            - horarios.
                         -->
                         <div
                             id="mensajes"
@@ -260,37 +253,29 @@
                         >
 
                             <!--
-                                Mensaje inicial solamente visual.
-
-                                Después será reemplazado por los eventos
-                                generados desde JavaScript.
+                                Este mensaje desaparece automáticamente
+                                cuando ocurre el primer evento.
                             -->
-                                Mensaje inicial que desaparecerá
-                                cuando ocurra el primer evento del chat.
-
-
-                            <p class="text-secondary text-center">
+                            <p class="text-secondary text-center mensaje-inicial">
                                 Todavía no hay mensajes.
                             </p>
 
                         </div>
 
 
-                        <!-- Pie de la tarjeta donde escribiremos mensajes -->
+
+                        <!-- ================================================= -->
+                        <!-- FORMULARIO DE MENSAJES                            -->
+                        <!-- ================================================= -->
+
                         <div class="card-footer">
 
                             <!--
-                                Formulario para enviar mensajes.
-
-                                En otra etapa JavaScript escuchará
-                                su evento submit.
+                                Formulario utilizado para enviar
+                                mensajes al servidor mediante Socket.IO.
                             -->
                             <form id="formMensaje">
 
-                                <!--
-                                    input-group coloca el campo de texto
-                                    y el botón en una misma línea.
-                                -->
                                 <div class="input-group">
 
                                     <!-- Campo donde se escribe el mensaje -->
@@ -303,7 +288,8 @@
                                         required
                                     >
 
-                                    <!-- Botón para enviar el mensaje -->
+
+                                    <!-- Botón de envío -->
                                     <button
                                         type="submit"
                                         class="btn btn-primary"
@@ -328,30 +314,18 @@
     </main>
 
 
+
     <!--
-        Socket.IO entrega automáticamente este archivo desde el servidor.
+        Socket.IO entrega automáticamente esta librería
+        desde el servidor.
 
-        No tenemos que crearlo manualmente.
-
-        Gracias a este script después podremos utilizar:
-
+        Gracias a esto podemos utilizar:
         const socket = io();
     -->
     <script src="/socket.io/socket.io.js"></script>
 
 
-    <!--
-        Nuestro JavaScript del frontend.
-
-        Acá programaremos posteriormente:
-
-        - ingreso del usuario;
-        - envío de mensajes;
-        - recepción de mensajes;
-        - usuarios conectados;
-        - conexiones;
-        - desconexiones.
-    -->
+    <!-- JavaScript propio del frontend -->
     <script src="script.js"></script>
 
 

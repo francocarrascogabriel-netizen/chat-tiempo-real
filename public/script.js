@@ -1,6 +1,6 @@
 /*
-    Iniciamos la conexión entre el navegador
-    y nuestro servidor Socket.IO.
+    Creamos la conexión entre este navegador
+    y el servidor Socket.IO.
 */
 const socket = io();
 
@@ -10,54 +10,76 @@ const socket = io();
 // ELEMENTOS DEL HTML
 // ======================================================
 
-// Pantalla para ingresar el nombre.
+// Pantalla inicial donde el usuario escribe su nombre.
 const pantallaIngreso =
     document.getElementById("pantallaIngreso");
+
 
 // Pantalla principal del chat.
 const pantallaChat =
     document.getElementById("pantallaChat");
 
-// Formulario de ingreso.
+
+// Formulario para ingresar al chat.
 const formIngreso =
     document.getElementById("formIngreso");
 
-// Campo donde se escribe el nombre.
+
+// Campo donde se escribe el nombre de usuario.
 const nombreUsuario =
     document.getElementById("nombreUsuario");
 
-// Nombre del usuario actual.
+
+// Lugar donde mostramos el usuario actual.
 const usuarioActual =
     document.getElementById("usuarioActual");
 
-// Lista de usuarios conectados.
+
+// Lista donde se muestran los usuarios conectados.
 const listaUsuarios =
     document.getElementById("listaUsuarios");
 
-// Contenedor donde aparecerán mensajes y eventos.
+
+// Contenedor donde aparecen mensajes y eventos.
 const mensajes =
     document.getElementById("mensajes");
+
 
 // Formulario utilizado para enviar mensajes.
 const formMensaje =
     document.getElementById("formMensaje");
 
-// Campo donde el usuario escribe un mensaje.
+
+// Campo donde el usuario escribe el mensaje.
 const mensaje =
     document.getElementById("mensaje");
 
 
+// Indicador visual de conexión con el servidor.
+const estadoConexion =
+    document.getElementById("estadoConexion");
+
+
+// Contador de usuarios conectados.
+const contadorUsuarios =
+    document.getElementById("contadorUsuarios");
+
+
 
 // ======================================================
-// FUNCIÓN PARA ELIMINAR EL MENSAJE INICIAL
+// ELIMINAR MENSAJE INICIAL
 // ======================================================
 
+/*
+    Elimina el texto:
+    "Todavía no hay mensajes."
+
+    Se ejecuta cuando aparece el primer evento
+    o el primer mensaje.
+*/
 function eliminarMensajeInicial() {
 
-    /*
-        Buscamos el texto:
-        "Todavía no hay mensajes."
-    */
+    // Buscamos el elemento por su clase.
     const mensajeInicial =
         mensajes.querySelector(".mensaje-inicial");
 
@@ -73,31 +95,40 @@ function eliminarMensajeInicial() {
 
 
 // ======================================================
-// FUNCIÓN PARA MOSTRAR EVENTOS
+// MOSTRAR EVENTOS EN EL CHAT
 // ======================================================
 
 /*
-    Esta función se utiliza para mostrar:
+    Utilizamos esta función para mostrar:
 
     - ingreso de usuarios;
     - salida de usuarios.
+
+    Parámetros:
+
+    texto = información que queremos mostrar.
+    hora = hora del evento.
+    tipo = ingreso o salida.
 */
 function agregarEvento(texto, hora, tipo) {
 
-    // Quitamos el mensaje inicial si todavía existe.
+    // Eliminamos el texto inicial si todavía existe.
     eliminarMensajeInicial();
 
 
-    // Creamos el contenedor del evento.
+    // Creamos un <div> para representar el evento.
     const evento =
         document.createElement("div");
 
 
-    // Agregamos una clase general.
+    // Clase general para todos los eventos.
     evento.classList.add("evento-chat");
 
 
-    // Agregamos una clase según el tipo de evento.
+    /*
+        Dependiendo del tipo de evento
+        utilizamos estilos diferentes.
+    */
     if (tipo === "ingreso") {
 
         evento.classList.add("evento-ingreso");
@@ -108,14 +139,14 @@ function agregarEvento(texto, hora, tipo) {
     }
 
 
-    // Creamos el texto del evento.
+    // Creamos el texto principal del evento.
     const contenido =
         document.createElement("span");
 
     contenido.textContent = texto;
 
 
-    // Creamos el elemento que mostrará la hora.
+    // Creamos el elemento donde aparecerá la hora.
     const horaEvento =
         document.createElement("small");
 
@@ -124,19 +155,19 @@ function agregarEvento(texto, hora, tipo) {
     horaEvento.textContent = hora;
 
 
-    // Agregamos texto y hora al evento.
+    // Agregamos texto y hora dentro del evento.
     evento.appendChild(contenido);
 
     evento.appendChild(horaEvento);
 
 
-    // Agregamos el evento al chat.
+    // Incorporamos el evento al área del chat.
     mensajes.appendChild(evento);
 
 
     /*
-        Movemos automáticamente el área
-        hacia el último elemento agregado.
+        Movemos automáticamente el scroll
+        hasta el último evento.
     */
     mensajes.scrollTop =
         mensajes.scrollHeight;
@@ -146,11 +177,11 @@ function agregarEvento(texto, hora, tipo) {
 
 
 // ======================================================
-// FUNCIÓN PARA MOSTRAR MENSAJES
+// MOSTRAR MENSAJES
 // ======================================================
 
 /*
-    Recibe un objeto enviado desde el servidor.
+    Recibe los datos enviados desde server.js.
 
     Ejemplo:
 
@@ -158,39 +189,40 @@ function agregarEvento(texto, hora, tipo) {
         idUsuario: "...",
         nombre: "Franco",
         texto: "Hola",
-        hora: "21:45:10"
+        fecha: "28/08/2026",
+        hora: "21:40:10"
     }
 */
 function agregarMensaje(datos) {
 
-    // Eliminamos el texto inicial.
+    // Eliminamos el mensaje inicial.
     eliminarMensajeInicial();
 
 
-    // Creamos el contenedor principal del mensaje.
+    // Creamos el contenedor principal.
     const contenedor =
         document.createElement("div");
 
 
-    /*
-        Todos los mensajes tendrán
-        la clase "mensaje-chat".
-    */
+    // Todos los mensajes utilizan esta clase.
     contenedor.classList.add("mensaje-chat");
 
 
     /*
-        Comparamos el ID recibido con nuestro socket.id.
+        Comparamos el ID del usuario que envió
+        el mensaje con nuestro propio socket.id.
 
-        Si son iguales significa que este mensaje
-        lo enviamos nosotros.
+        Así sabemos si el mensaje es nuestro
+        o pertenece a otra persona.
     */
     if (datos.idUsuario === socket.id) {
 
+        // Mensaje propio.
         contenedor.classList.add("mensaje-propio");
 
     } else {
 
+        // Mensaje enviado por otro usuario.
         contenedor.classList.add("mensaje-otro");
     }
 
@@ -199,17 +231,18 @@ function agregarMensaje(datos) {
     const encabezado =
         document.createElement("div");
 
-    encabezado.classList.add("mensaje-encabezado");
+    encabezado.classList.add(
+        "mensaje-encabezado"
+    );
 
 
-    // Nombre de quien envió el mensaje.
+    // Creamos el nombre del autor.
     const autor =
         document.createElement("strong");
 
 
     /*
-        Si el mensaje es nuestro,
-        mostramos "Vos".
+        Si el mensaje es nuestro mostramos "Vos".
 
         Si pertenece a otra persona,
         mostramos su nombre.
@@ -224,16 +257,18 @@ function agregarMensaje(datos) {
     }
 
 
-    // Elemento para mostrar la hora.
+    // Creamos el elemento para mostrar la hora.
     const hora =
         document.createElement("small");
 
-    hora.classList.add("hora-mensaje");
+    hora.classList.add(
+        "hora-mensaje"
+    );
 
     hora.textContent = datos.hora;
 
 
-    // Agregamos autor y hora a la cabecera.
+    // Incorporamos autor y hora a la cabecera.
     encabezado.appendChild(autor);
 
     encabezado.appendChild(hora);
@@ -245,25 +280,26 @@ function agregarMensaje(datos) {
 
 
     /*
-        Usamos textContent.
-
-        De esta manera el navegador interpreta
-        el contenido como texto y no como código HTML.
+        Utilizamos textContent para que
+        cualquier texto enviado sea tratado
+        como texto y no como código HTML.
     */
     texto.textContent = datos.texto;
 
 
-    // Clase para darle estilo.
+    // Clase Bootstrap para eliminar margen inferior.
     texto.classList.add("mb-0");
 
 
-    // Agregamos todo al contenedor.
+    // Agregamos la cabecera al mensaje.
     contenedor.appendChild(encabezado);
 
+
+    // Agregamos el texto del mensaje.
     contenedor.appendChild(texto);
 
 
-    // Mostramos finalmente el mensaje.
+    // Mostramos el mensaje dentro del chat.
     mensajes.appendChild(contenedor);
 
 
@@ -276,59 +312,90 @@ function agregarMensaje(datos) {
 
 
 // ======================================================
-// INGRESO AL CHAT
+// INGRESO DEL USUARIO
 // ======================================================
 
-formIngreso.addEventListener("submit", (evento) => {
+/*
+    Escuchamos el envío del formulario
+    donde se ingresa el nombre.
+*/
+formIngreso.addEventListener(
+    "submit",
+    (evento) => {
 
-    // Evitamos que la página se recargue.
-    evento.preventDefault();
+        /*
+            Evitamos que el formulario haga
+            una recarga tradicional de la página.
+        */
+        evento.preventDefault();
 
 
-    // Obtenemos el nombre.
-    const nombre =
-        nombreUsuario.value.trim();
+        // Obtenemos el nombre ingresado.
+        const nombre =
+            nombreUsuario.value.trim();
 
 
-    // Evitamos un nombre vacío.
-    if (nombre === "") {
-        return;
+        // Evitamos nombres vacíos.
+        if (nombre === "") {
+
+            return;
+        }
+
+
+        /*
+            Enviamos el nombre al servidor.
+
+            server.js escucha este evento mediante:
+
+            socket.on("registrarUsuario", ...)
+        */
+        socket.emit(
+            "registrarUsuario",
+            nombre
+        );
+
     }
-
-
-    // Enviamos el nombre al servidor.
-    socket.emit(
-        "registrarUsuario",
-        nombre
-    );
-
-});
+);
 
 
 
 // ======================================================
-// USUARIO REGISTRADO
+// CONFIRMACIÓN DEL REGISTRO
 // ======================================================
 
-socket.on("usuarioRegistrado", (usuario) => {
+/*
+    El servidor devuelve este evento
+    cuando el usuario fue registrado correctamente.
+*/
+socket.on(
+    "usuarioRegistrado",
+    (usuario) => {
 
-    // Mostramos nombre y parte del ID.
-    usuarioActual.textContent =
-        `${usuario.nombre} (${usuario.id.substring(0, 6)})`;
+        /*
+            Mostramos:
+            nombre + primeros 6 caracteres del ID.
+        */
+        usuarioActual.textContent =
+            `${usuario.nombre} (${usuario.id.substring(0, 6)})`;
 
 
-    // Ocultamos la pantalla inicial.
-    pantallaIngreso.classList.add("d-none");
+        // Ocultamos la pantalla de ingreso.
+        pantallaIngreso.classList.add(
+            "d-none"
+        );
 
 
-    // Mostramos el chat.
-    pantallaChat.classList.remove("d-none");
+        // Mostramos la pantalla del chat.
+        pantallaChat.classList.remove(
+            "d-none"
+        );
 
 
-    // Dejamos el cursor en el campo de mensajes.
-    mensaje.focus();
+        // Dejamos el cursor en el campo de mensajes.
+        mensaje.focus();
 
-});
+    }
+);
 
 
 
@@ -336,101 +403,144 @@ socket.on("usuarioRegistrado", (usuario) => {
 // ACTUALIZAR USUARIOS CONECTADOS
 // ======================================================
 
-socket.on("actualizarUsuarios", (usuarios) => {
+/*
+    El servidor envía este evento
+    cada vez que cambia la lista de usuarios.
+*/
+socket.on(
+    "actualizarUsuarios",
+    (usuarios) => {
 
-    // Eliminamos la lista anterior.
-    listaUsuarios.innerHTML = "";
+        /*
+            Mostramos la cantidad total
+            de usuarios conectados.
+        */
+        contadorUsuarios.textContent =
+            usuarios.length;
 
 
-    // Recorremos todos los usuarios.
-    usuarios.forEach((usuario) => {
-
-        // Creamos un <li>.
-        const elementoUsuario =
-            document.createElement("li");
+        // Limpiamos la lista anterior.
+        listaUsuarios.innerHTML = "";
 
 
-        // Aplicamos estilos de Bootstrap.
-        elementoUsuario.classList.add(
-            "list-group-item",
-            "d-flex",
-            "justify-content-between",
-            "align-items-center"
+        // Recorremos todos los usuarios.
+        usuarios.forEach(
+            (usuario) => {
+
+                // Creamos un elemento <li>.
+                const elementoUsuario =
+                    document.createElement("li");
+
+
+                // Clases Bootstrap para organizar la fila.
+                elementoUsuario.classList.add(
+                    "list-group-item",
+                    "d-flex",
+                    "justify-content-between",
+                    "align-items-center"
+                );
+
+
+                // Creamos el nombre del usuario.
+                const nombre =
+                    document.createElement("span");
+
+                nombre.textContent =
+                    usuario.nombre;
+
+
+                // Creamos una parte visible del ID.
+                const identificador =
+                    document.createElement("small");
+
+                identificador.classList.add(
+                    "text-secondary"
+                );
+
+                identificador.textContent =
+                    usuario.id.substring(0, 6);
+
+
+                /*
+                    Si este ID corresponde
+                    al navegador actual,
+                    agregamos "(vos)".
+                */
+                if (usuario.id === socket.id) {
+
+                    nombre.textContent +=
+                        " (vos)";
+                }
+
+
+                // Agregamos nombre al <li>.
+                elementoUsuario.appendChild(
+                    nombre
+                );
+
+
+                // Agregamos identificador al <li>.
+                elementoUsuario.appendChild(
+                    identificador
+                );
+
+
+                // Incorporamos el usuario a la lista.
+                listaUsuarios.appendChild(
+                    elementoUsuario
+                );
+
+            }
         );
 
-
-        // Creamos el nombre.
-        const nombre =
-            document.createElement("span");
-
-        nombre.textContent = usuario.nombre;
+    }
+);
 
 
-        // Creamos el identificador.
-        const identificador =
-            document.createElement("small");
 
-        identificador.classList.add(
-            "text-secondary"
+// ======================================================
+// INGRESO DE UN USUARIO
+// ======================================================
+
+/*
+    El servidor emite este evento
+    cuando alguien entra al chat.
+*/
+socket.on(
+    "usuarioIngreso",
+    (datos) => {
+
+        agregarEvento(
+            `${datos.nombre} ingresó al chat`,
+            datos.hora,
+            "ingreso"
         );
 
-        identificador.textContent =
-            usuario.id.substring(0, 6);
+    }
+);
 
 
-        // Indicamos cuál somos nosotros.
-        if (usuario.id === socket.id) {
 
-            nombre.textContent += " (vos)";
-        }
+// ======================================================
+// SALIDA DE UN USUARIO
+// ======================================================
 
+/*
+    El servidor emite este evento
+    cuando una persona abandona el chat.
+*/
+socket.on(
+    "usuarioSalida",
+    (datos) => {
 
-        // Agregamos nombre e ID.
-        elementoUsuario.appendChild(nombre);
-
-        elementoUsuario.appendChild(identificador);
-
-
-        // Agregamos el usuario a la lista.
-        listaUsuarios.appendChild(
-            elementoUsuario
+        agregarEvento(
+            `${datos.nombre} abandonó el chat`,
+            datos.hora,
+            "salida"
         );
 
-    });
-
-});
-
-
-
-// ======================================================
-// EVENTO DE INGRESO
-// ======================================================
-
-socket.on("usuarioIngreso", (datos) => {
-
-    agregarEvento(
-        `${datos.nombre} ingresó al chat`,
-        datos.hora,
-        "ingreso"
-    );
-
-});
-
-
-
-// ======================================================
-// EVENTO DE SALIDA
-// ======================================================
-
-socket.on("usuarioSalida", (datos) => {
-
-    agregarEvento(
-        `${datos.nombre} abandonó el chat`,
-        datos.hora,
-        "salida"
-    );
-
-});
+    }
+);
 
 
 
@@ -439,49 +549,51 @@ socket.on("usuarioSalida", (datos) => {
 // ======================================================
 
 /*
-    Escuchamos el submit del formulario
-    donde escribimos los mensajes.
+    Escuchamos el formulario donde
+    el usuario escribe mensajes.
 */
-formMensaje.addEventListener("submit", (evento) => {
+formMensaje.addEventListener(
+    "submit",
+    (evento) => {
 
-    // Evitamos recargar la página.
-    evento.preventDefault();
-
-
-    // Obtenemos el texto escrito.
-    const texto =
-        mensaje.value.trim();
+        // Evitamos que la página se recargue.
+        evento.preventDefault();
 
 
-    // Evitamos mensajes vacíos.
-    if (texto === "") {
-        return;
+        // Obtenemos el texto escrito.
+        const texto =
+            mensaje.value.trim();
+
+
+        // Evitamos mensajes vacíos.
+        if (texto === "") {
+
+            return;
+        }
+
+
+        /*
+            Enviamos el mensaje al servidor.
+
+            server.js lo recibe mediante:
+
+            socket.on("enviarMensaje", ...)
+        */
+        socket.emit(
+            "enviarMensaje",
+            texto
+        );
+
+
+        // Limpiamos el campo.
+        mensaje.value = "";
+
+
+        // Volvemos a dejar el cursor en el campo.
+        mensaje.focus();
+
     }
-
-
-    /*
-        Enviamos el mensaje al servidor.
-
-        Cliente:
-        socket.emit()
-
-        Servidor:
-        socket.on()
-    */
-    socket.emit(
-        "enviarMensaje",
-        texto
-    );
-
-
-    // Limpiamos el campo después de enviar.
-    mensaje.value = "";
-
-
-    // Volvemos a dejar el cursor en el input.
-    mensaje.focus();
-
-});
+);
 
 
 
@@ -490,12 +602,94 @@ formMensaje.addEventListener("submit", (evento) => {
 // ======================================================
 
 /*
-    El servidor envía "nuevoMensaje"
-    a todos los usuarios conectados.
+    El servidor utiliza io.emit()
+    para enviar el mensaje a todos
+    los usuarios conectados.
 */
-socket.on("nuevoMensaje", (datos) => {
+socket.on(
+    "nuevoMensaje",
+    (datos) => {
 
-    // Mostramos el mensaje recibido.
-    agregarMensaje(datos);
+        // Mostramos el mensaje recibido.
+        agregarMensaje(datos);
 
-});
+    }
+);
+
+
+
+// ======================================================
+// ESTADO DE CONEXIÓN
+// ======================================================
+
+/*
+    Socket.IO ejecuta automáticamente
+    este evento cuando logra conectarse
+    correctamente con el servidor.
+*/
+socket.on(
+    "connect",
+    () => {
+
+        // Cambiamos el texto.
+        estadoConexion.textContent =
+            "Conectado";
+
+
+        // Quitamos el color rojo.
+        estadoConexion.classList.remove(
+            "text-bg-danger"
+        );
+
+
+        // Aplicamos el color verde.
+        estadoConexion.classList.add(
+            "text-bg-success"
+        );
+
+    }
+);
+
+
+
+// ======================================================
+// PÉRDIDA DE CONEXIÓN
+// ======================================================
+
+/*
+    Socket.IO ejecuta este evento
+    cuando el navegador pierde la conexión
+    con el servidor.
+*/
+socket.on(
+    "disconnect",
+    (reason) => {
+
+        // Cambiamos el indicador visual.
+        estadoConexion.textContent =
+            "Desconectado";
+
+
+        // Quitamos el color verde.
+        estadoConexion.classList.remove(
+            "text-bg-success"
+        );
+
+
+        // Aplicamos el color rojo.
+        estadoConexion.classList.add(
+            "text-bg-danger"
+        );
+
+
+        /*
+            Mostramos también el motivo
+            en la consola del navegador.
+        */
+        console.log(
+            "Conexión perdida. Motivo:",
+            reason
+        );
+
+    }
+);
