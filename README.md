@@ -1,50 +1,49 @@
 # Chat en tiempo real con WebSocket
 
-Proyecto desarrollado como Trabajo Práctico de Práctica Profesional III.
+Trabajo Práctico desarrollado para la materia **Práctica Profesional III**.
 
-La aplicación consiste en un chat en tiempo real que permite la comunicación entre varios usuarios mediante Socket.IO.
+El proyecto consiste en un chat en tiempo real desarrollado con Node.js y Socket.IO, donde varios usuarios pueden conectarse simultáneamente, intercambiar mensajes y visualizar eventos de ingreso y desconexión.
 
-Cada usuario debe ingresar un nombre antes de acceder al chat y es identificado internamente mediante un `socket.id` único, permitiendo diferenciar incluso usuarios que utilicen el mismo nombre.
+Cada conexión es identificada mediante un `socket.id` único, por lo que pueden existir usuarios con el mismo nombre sin que se produzcan conflictos.
 
 ---
 
 # Tecnologías utilizadas
 
-El proyecto utiliza las siguientes tecnologías:
-
-- **Node.js:** entorno de ejecución utilizado para el backend.
-- **Express:** servidor web utilizado para servir los archivos del frontend.
+- **Node.js:** entorno de ejecución utilizado para desarrollar el backend.
+- **Express:** framework utilizado para crear el servidor web y servir el frontend.
 - **HTTP:** módulo nativo de Node.js utilizado para crear el servidor sobre el cual funciona Socket.IO.
-- **Socket.IO:** comunicación en tiempo real entre frontend y backend.
-- **JavaScript:** utilizado tanto en el frontend como en el backend.
+- **Socket.IO:** comunicación en tiempo real entre los navegadores y el servidor.
+- **JavaScript:** utilizado tanto en frontend como backend.
 - **HTML5:** estructura de la interfaz.
-- **CSS3:** estilos personalizados del chat.
+- **CSS3:** estilos personalizados.
 - **Bootstrap 5:** diseño responsive y componentes visuales.
-- **pnpm:** gestor de paquetes utilizado para instalar las dependencias.
-- **Git:** control de versiones local del proyecto.
+- **pnpm:** gestor de paquetes utilizado para administrar las dependencias.
+- **Git:** sistema de control de versiones utilizado de manera local.
 
 ---
 
 # Funcionalidades
 
-El chat permite:
+La aplicación permite:
 
-- Elegir un nombre de usuario antes de ingresar.
-- Identificar cada conexión mediante un `socket.id` único.
+- Elegir un nombre antes de ingresar al chat.
+- Identificar cada usuario mediante un `socket.id` único.
 - Permitir usuarios con el mismo nombre.
 - Mostrar el usuario actual.
-- Mostrar una lista de usuarios conectados.
-- Mostrar la cantidad total de usuarios conectados.
-- Enviar y recibir mensajes en tiempo real.
-- Mostrar el nombre del usuario que envió cada mensaje.
-- Mostrar la hora de los mensajes.
-- Informar cuando un usuario ingresa al chat.
-- Informar cuando un usuario abandona el chat.
-- Mostrar la hora de los eventos de conexión y desconexión.
-- Registrar desde el servidor el motivo de desconexión.
-- Registrar en consola usuario, ID, fecha, hora y motivo de desconexión.
-- Mostrar visualmente el estado de conexión con el servidor.
-- Diferenciar visualmente los mensajes propios de los mensajes enviados por otros usuarios.
+- Mostrar los usuarios conectados.
+- Mostrar la cantidad de usuarios conectados.
+- Enviar mensajes en tiempo real.
+- Recibir mensajes sin recargar la página.
+- Mostrar quién envió cada mensaje.
+- Mostrar la hora de cada mensaje.
+- Informar cuándo un usuario ingresa.
+- Informar cuándo un usuario abandona el chat.
+- Mostrar la hora de los eventos de ingreso y salida.
+- Detectar desconexiones desde el servidor.
+- Registrar usuario, ID, fecha, hora y motivo de desconexión.
+- Mostrar el estado de conexión con el servidor.
+- Diferenciar visualmente mensajes propios y mensajes de otros usuarios.
 - Utilizar una interfaz oscura y responsive.
 
 ---
@@ -60,12 +59,14 @@ chat-tiempo-real/
 │   └── script.js
 │
 ├── capturas/
-│   ├── 01-pantalla-inicial.png
-│   ├── 02-chat-funcionando.png
-│   ├── 03-dos-usuarios-conectados.png
-│   ├── 04-mensajes-enviados.png
-│   ├── 05-ingreso-usuario.png
-│   └── 06-desconexion-usuario.png
+│   ├── 01-pantalla-inicial.jpg
+│   ├── 02-chat-funcionando.jpg
+│   ├── 03-dos-usuarios-conectados.jpg
+│   ├── 04-mensajes-enviados.jpg
+│   ├── 05-ingreso-usuario.jpg
+│   ├── 06-desconexion-usuario.jpg
+│   ├── 07-motivo-desconexion-servidor.jpg
+│   └── 08-readme-stackedit.jpg
 │
 ├── server.js
 ├── package.json
@@ -74,65 +75,81 @@ chat-tiempo-real/
 └── .gitignore
 ```
 
-## Archivos principales
+---
 
-### `server.js`
+# Archivos principales
+
+## server.js
 
 Contiene el backend de la aplicación.
 
-Se encarga de:
+Sus principales funciones son:
 
 - Crear el servidor Express.
 - Crear el servidor HTTP.
 - Inicializar Socket.IO.
+- Detectar nuevas conexiones.
 - Registrar usuarios.
-- Asignar y utilizar el `socket.id`.
+- Asociar cada usuario con su `socket.id`.
 - Mantener la lista de usuarios conectados.
 - Recibir mensajes.
-- Distribuir mensajes a todos los clientes.
-- Detectar conexiones y desconexiones.
-- Registrar fecha, hora y motivo de desconexión.
+- Enviar mensajes a todos los clientes.
+- Detectar desconexiones.
+- Registrar el motivo de desconexión.
+- Obtener fecha y hora de los eventos.
 
-### `public/index.html`
+---
+
+## public/index.html
 
 Contiene la estructura visual de la aplicación.
 
 Incluye:
 
 - Pantalla de ingreso.
-- Formulario de nombre de usuario.
-- Área principal del chat.
-- Lista de usuarios conectados.
+- Campo para escribir el nombre.
+- Pantalla principal del chat.
+- Usuario actual.
+- Estado de conexión.
+- Cantidad de usuarios conectados.
+- Lista de usuarios.
 - Área de mensajes.
 - Formulario para enviar mensajes.
-- Indicador de conexión.
-- Contador de usuarios.
 
-### `public/script.js`
+---
 
-Contiene la lógica JavaScript ejecutada en el navegador.
+## public/script.js
+
+Contiene la lógica JavaScript ejecutada desde el navegador.
 
 Se encarga de:
 
-- Conectarse con Socket.IO.
-- Enviar el nombre del usuario.
+- Conectarse al servidor mediante Socket.IO.
+- Registrar al usuario.
 - Enviar mensajes.
 - Recibir mensajes.
-- Actualizar la lista de usuarios.
+- Mostrar usuarios conectados.
 - Mostrar eventos de ingreso.
-- Mostrar eventos de salida.
-- Actualizar el estado de conexión.
-- Modificar dinámicamente la interfaz.
+- Mostrar eventos de desconexión.
+- Actualizar el contador de usuarios.
+- Mostrar el estado de conexión.
+- Modificar dinámicamente los elementos HTML.
 
-### `public/style.css`
+---
 
-Contiene los estilos propios de la aplicación.
+## public/style.css
 
-Se utiliza un diseño oscuro y minimalista para reducir el brillo de la interfaz y facilitar su utilización.
+Contiene los estilos propios del proyecto.
 
-### `capturas/`
+Se implementó una interfaz oscura y minimalista para reducir el brillo de la pantalla y facilitar la lectura.
 
-Contiene las evidencias visuales utilizadas dentro de este README.
+También permite diferenciar visualmente:
+
+- Mensajes propios.
+- Mensajes de otros usuarios.
+- Eventos de ingreso.
+- Eventos de desconexión.
+- Estado de conexión.
 
 ---
 
@@ -144,7 +161,7 @@ Para ejecutar el proyecto es necesario tener instalado:
 - pnpm.
 - Un navegador web moderno.
 
-Para comprobar las versiones instaladas se pueden ejecutar los siguientes comandos:
+Se pueden comprobar las versiones instaladas mediante:
 
 ```bash
 node --version
@@ -158,19 +175,19 @@ pnpm --version
 
 # Instalación
 
-Una vez descargado o copiado el proyecto, ingresar mediante una terminal a la carpeta del proyecto:
+Primero se debe ingresar a la carpeta del proyecto:
 
 ```bash
 cd chat-tiempo-real
 ```
 
-Instalar las dependencias:
+Luego instalar las dependencias:
 
 ```bash
 pnpm install
 ```
 
-Este comando lee el archivo `package.json` e instala las dependencias necesarias dentro de la carpeta `node_modules`.
+El comando lee el archivo `package.json` e instala las dependencias necesarias dentro de `node_modules`.
 
 Las principales dependencias utilizadas son:
 
@@ -193,41 +210,42 @@ Para iniciar el servidor:
 pnpm start
 ```
 
-El servidor quedará disponible en:
+Una vez iniciado, la aplicación queda disponible en:
 
 ```text
 http://localhost:3000
 ```
 
-Luego se debe abrir esa dirección desde un navegador.
+---
 
 ## Ejecución durante el desarrollo
 
-También se puede ejecutar:
+Para trabajar utilizando Nodemon:
 
 ```bash
 pnpm dev
 ```
 
-Este comando utiliza `nodemon`, que reinicia automáticamente el servidor cuando se detectan modificaciones en `server.js`.
+Nodemon reinicia automáticamente el servidor cuando se detectan cambios en `server.js`.
 
 ---
 
 # Funcionamiento general
 
-Cuando una persona abre la aplicación, primero aparece una pantalla donde debe ingresar un nombre de usuario.
+Cuando una persona accede a la aplicación se muestra inicialmente una pantalla para ingresar un nombre.
 
-Una vez enviado el nombre:
+Una vez ingresado:
 
 1. El frontend envía el nombre al servidor.
-2. El servidor obtiene el `socket.id` de la conexión.
-3. Se crea un usuario con su nombre e identificador.
-4. El usuario se almacena temporalmente en memoria.
+2. Socket.IO identifica la conexión mediante `socket.id`.
+3. El servidor crea un objeto con el nombre y el ID.
+4. El usuario es almacenado temporalmente en un `Map`.
 5. El servidor confirma el registro.
-6. El frontend muestra la pantalla principal del chat.
-7. Todos los usuarios reciben la lista actualizada de personas conectadas.
+6. El navegador muestra la pantalla principal.
+7. El servidor envía la lista actualizada de usuarios.
+8. Todos los clientes visualizan el ingreso del nuevo usuario.
 
-Cada usuario queda identificado mediante:
+Cada usuario queda identificado por:
 
 ```text
 Nombre + socket.id
@@ -236,37 +254,39 @@ Nombre + socket.id
 Por ejemplo:
 
 ```text
-Franco - aB93kd...
-Franco - K82jd1...
+Franco - MA0wn5...
+Franco - BSA7CL...
 ```
 
-Aunque los dos usuarios tengan el mismo nombre, sus conexiones siguen siendo diferentes debido al `socket.id`.
+Aunque ambos usuarios tengan el mismo nombre, sus conexiones son diferentes porque poseen distintos identificadores.
 
 ---
 
 # Comunicación mediante WebSocket / Socket.IO
 
-La comunicación entre el navegador y el servidor se realiza utilizando eventos de Socket.IO.
+La comunicación entre el frontend y el backend se realiza mediante eventos de Socket.IO.
 
-El frontend y el backend pueden enviar y escuchar eventos sin necesidad de recargar la página.
+Esto permite intercambiar información entre el navegador y el servidor sin recargar la página.
 
-## `socket.emit()`
+---
 
-Se utiliza para emitir un evento.
+## socket.emit()
 
-Por ejemplo, desde el cliente:
+`socket.emit()` permite emitir un evento.
+
+Por ejemplo, el navegador envía un mensaje al servidor mediante:
 
 ```javascript
 socket.emit("enviarMensaje", texto);
 ```
 
-El cliente envía el evento `enviarMensaje` al servidor.
+---
 
-## `socket.on()`
+## socket.on()
 
-Se utiliza para escuchar un evento.
+`socket.on()` permite escuchar un evento.
 
-Por ejemplo, en el servidor:
+El servidor recibe el mensaje mediante:
 
 ```javascript
 socket.on("enviarMensaje", (texto) => {
@@ -274,9 +294,11 @@ socket.on("enviarMensaje", (texto) => {
 });
 ```
 
-## `io.emit()`
+---
 
-Desde el servidor permite enviar un evento a todos los usuarios conectados.
+## io.emit()
+
+`io.emit()` permite que el servidor envíe un evento a todos los usuarios conectados.
 
 Por ejemplo:
 
@@ -284,7 +306,7 @@ Por ejemplo:
 io.emit("nuevoMensaje", datosMensaje);
 ```
 
-De esta manera todos los navegadores reciben el nuevo mensaje.
+De esta manera todos los navegadores reciben el mismo mensaje en tiempo real.
 
 ---
 
@@ -294,45 +316,49 @@ De esta manera todos los navegadores reciben el nuevo mensaje.
 |---|---|---|
 | `connection` | Socket.IO → Servidor | Detecta una nueva conexión |
 | `registrarUsuario` | Cliente → Servidor | Envía el nombre elegido |
-| `usuarioRegistrado` | Servidor → Cliente | Confirma el registro del usuario |
-| `actualizarUsuarios` | Servidor → Clientes | Actualiza la lista de conectados |
-| `usuarioIngreso` | Servidor → Clientes | Informa el ingreso de un usuario |
+| `usuarioRegistrado` | Servidor → Cliente | Confirma el registro |
+| `actualizarUsuarios` | Servidor → Clientes | Actualiza usuarios conectados |
+| `usuarioIngreso` | Servidor → Clientes | Informa un nuevo ingreso |
 | `enviarMensaje` | Cliente → Servidor | Envía un mensaje |
-| `nuevoMensaje` | Servidor → Clientes | Distribuye el mensaje |
-| `usuarioSalida` | Servidor → Clientes | Informa la salida de un usuario |
+| `nuevoMensaje` | Servidor → Clientes | Distribuye un mensaje |
+| `usuarioSalida` | Servidor → Clientes | Informa una desconexión |
 | `disconnect` | Socket.IO | Detecta una desconexión |
-| `connect` | Socket.IO → Cliente | Indica que existe conexión con el servidor |
+| `connect` | Socket.IO → Cliente | Detecta la conexión con el servidor |
 
 ---
 
 # Envío de mensajes
 
-Cuando un usuario escribe un mensaje y presiona **Enviar**, el frontend ejecuta:
+Cuando el usuario escribe un mensaje y presiona **Enviar**, el frontend ejecuta:
 
 ```javascript
 socket.emit("enviarMensaje", texto);
 ```
 
-El servidor recibe el mensaje:
+El servidor recibe el evento:
 
 ```javascript
 socket.on("enviarMensaje", (texto) => {
 ```
 
-Luego utiliza el `socket.id` para identificar qué usuario realizó el envío.
+Luego identifica al usuario mediante:
 
-Finalmente distribuye el mensaje:
+```javascript
+usuarios.get(socket.id);
+```
+
+Una vez identificado, crea la información del mensaje y la envía a todos los clientes mediante:
 
 ```javascript
 io.emit("nuevoMensaje", datosMensaje);
 ```
 
-El mensaje enviado contiene:
+Cada mensaje contiene:
 
 ```text
 ID del usuario
 Nombre
-Mensaje
+Texto
 Fecha
 Hora
 ```
@@ -347,27 +373,25 @@ Socket.IO genera automáticamente un identificador único para cada conexión:
 socket.id
 ```
 
-Este ID permite distinguir conexiones aunque los usuarios tengan el mismo nombre.
+Los usuarios son almacenados en un `Map` utilizando el ID como clave.
 
-Los usuarios conectados se almacenan en el servidor utilizando un `Map`.
-
-Ejemplo conceptual:
+Ejemplo:
 
 ```text
 socket.id          usuario
 
-A72jd82     →      Franco
-P83ks91     →      Pedro
-K92js10     →      Franco
+MA0wn5...   →      Franco
+vV1cDt...   →      Julio
+BSA7CL...   →      Francisco
 ```
 
-En este ejemplo existen dos usuarios llamados Franco, pero ambos poseen IDs distintos.
+Esto permite identificar correctamente cada conexión aunque existan usuarios que utilicen el mismo nombre.
 
 ---
 
 # Desconexión de usuarios
 
-Socket.IO permite detectar una desconexión mediante:
+Socket.IO permite detectar cuándo una conexión termina mediante:
 
 ```javascript
 socket.on("disconnect", (reason) => {
@@ -375,23 +399,23 @@ socket.on("disconnect", (reason) => {
 
 El parámetro `reason` contiene el motivo detectado por Socket.IO.
 
-Cuando un usuario se desconecta, el servidor registra en consola:
+Cuando ocurre una desconexión, el servidor registra:
 
 ```text
 Fecha
 Hora
-Nombre del usuario
+Usuario
 socket.id
-Motivo de desconexión
+Motivo
 ```
 
 Ejemplo:
 
 ```text
-[28/08/2026 22:15:32] Usuario: Pedro | ID: AbC123 | Motivo: transport close
+[28/08/2026 22:45:44] Usuario: Franco | ID: MA0wn5... | Motivo: transport close
 ```
 
-Luego el usuario es eliminado de la lista de conectados y los demás clientes reciben el evento `usuarioSalida`.
+Luego el usuario es eliminado de la lista de conectados y el servidor informa el evento a los demás clientes.
 
 ---
 
@@ -400,23 +424,25 @@ Luego el usuario es eliminado de la lista de conectados y los demás clientes re
 ```mermaid
 flowchart LR
 
-    A[Usuario 1<br>Navegador]
-    B[Usuario 2<br>Navegador]
+    U1[Usuario 1<br>Navegador]
+    U2[Usuario 2<br>Navegador]
 
     S[Servidor Node.js<br>Express + Socket.IO]
 
     F[Frontend<br>HTML + CSS + JavaScript + Bootstrap]
 
-    A <-->|Eventos Socket.IO| S
-    B <-->|Eventos Socket.IO| S
+    U1 <-->|Eventos Socket.IO| S
+    U2 <-->|Eventos Socket.IO| S
 
     S -->|Sirve archivos estáticos| F
 
-    F --> A
-    F --> B
+    F --> U1
+    F --> U2
 ```
 
-## Flujo de un mensaje
+---
+
+# Flujo de un mensaje
 
 ```mermaid
 sequenceDiagram
@@ -437,102 +463,117 @@ sequenceDiagram
 
 ## Pantalla inicial
 
-Pantalla donde el usuario ingresa su nombre antes de acceder al chat.
+Pantalla mostrada antes de ingresar al chat.
 
-![Pantalla inicial](capturas/01-pantalla-inicial.png)
+![Pantalla inicial](capturas/01-pantalla-inicial.jpg)
 
 ---
 
 ## Chat funcionando
 
-Vista general de la aplicación funcionando.
+Vista general de la interfaz del chat funcionando.
 
-![Chat funcionando](capturas/02-chat-funcionando.png)
+![Chat funcionando](capturas/02-chat-funcionando.jpg)
 
 ---
 
 ## Dos usuarios conectados
 
-Prueba realizada con dos navegadores conectados al mismo servidor.
+Prueba realizada con dos usuarios conectados simultáneamente.
 
-![Dos usuarios conectados](capturas/03-dos-usuarios-conectados.png)
+![Dos usuarios conectados](capturas/03-dos-usuarios-conectados.jpg)
 
 ---
 
 ## Mensajes enviados
 
-Intercambio de mensajes en tiempo real entre usuarios.
+Prueba de intercambio de mensajes en tiempo real.
 
-![Mensajes enviados](capturas/04-mensajes-enviados.png)
+![Mensajes enviados](capturas/04-mensajes-enviados.jpg)
 
 ---
 
 ## Ingreso de un usuario
 
-Evento generado cuando un nuevo usuario entra al chat.
+Evento generado cuando un nuevo usuario se conecta al chat.
 
-![Ingreso de usuario](capturas/05-ingreso-usuario.png)
+![Ingreso de usuario](capturas/05-ingreso-usuario.jpg)
 
 ---
 
 ## Desconexión de un usuario
 
-Evento mostrado cuando uno de los usuarios abandona el chat.
+Evento generado cuando uno de los usuarios abandona el chat.
 
-![Desconexión de usuario](capturas/06-desconexion-usuario.png)
+![Desconexión de usuario](capturas/06-desconexion-usuario.jpg)
+
+---
+
+## Motivo de desconexión desde el servidor
+
+La terminal del servidor registra el usuario, identificador, fecha, hora y motivo de desconexión.
+
+![Motivo de desconexión](capturas/07-motivo-desconexion-servidor.jpg)
+
+---
+
+## README visualizado en StackEdit
+
+El archivo README fue verificado utilizando StackEdit para comprobar su formato Markdown y los diagramas Mermaid.
+
+![README StackEdit](capturas/08-readme-stackedit.jpg)
 
 ---
 
 # Pruebas realizadas
 
-Durante el desarrollo se realizaron diferentes pruebas de funcionamiento.
-
 | Prueba | Resultado |
 |---|---|
-| Ingresar un nombre de usuario | Correcto |
+| Ingresar un nombre | Correcto |
 | Intentar ingresar sin nombre | Bloqueado |
 | Conectar dos usuarios | Correcto |
 | Utilizar dos usuarios con el mismo nombre | Correcto |
-| Verificar IDs diferentes | Correcto |
-| Enviar mensajes entre dos usuarios | Correcto |
+| Verificar diferentes `socket.id` | Correcto |
+| Enviar mensajes | Correcto |
+| Recibir mensajes en tiempo real | Correcto |
 | Mostrar hora de los mensajes | Correcto |
 | Mostrar ingreso de usuario | Correcto |
 | Mostrar salida de usuario | Correcto |
 | Cerrar una pestaña | Desconexión detectada |
 | Cerrar el navegador | Desconexión detectada |
-| Recargar la página | La conexión anterior se desconecta |
-| Interrumpir la conexión | Socket.IO detecta la pérdida de conexión |
-| Actualizar lista de usuarios | Correcto |
-| Verificar motivo de desconexión en servidor | Correcto |
+| Recargar la página | Desconexión detectada |
+| Interrumpir la conexión | Socket.IO detecta la pérdida |
+| Actualizar usuarios conectados | Correcto |
+| Mostrar cantidad de usuarios | Correcto |
+| Registrar motivo de desconexión | Correcto |
 
 ---
 
 # Problemas conocidos
 
-Actualmente los usuarios se almacenan únicamente en memoria mediante un `Map`.
+Actualmente los usuarios conectados se almacenan solamente en memoria utilizando un `Map`.
 
-Por este motivo, si el servidor se reinicia, la información de los usuarios conectados se pierde.
+Por este motivo, cuando el servidor se reinicia se pierde la información de las conexiones existentes.
 
-También, al recargar completamente la página, el usuario debe volver a ingresar su nombre.
+Al recargar completamente la página, el usuario debe volver a ingresar su nombre.
 
-El proyecto actualmente no mantiene historial permanente de mensajes.
+Los mensajes tampoco se almacenan permanentemente, por lo que desaparecen cuando se recarga la página o se reinicia el servidor.
 
 ---
 
 # Mejoras futuras
 
-Como posibles mejoras se podrían implementar:
+Como posibles mejoras futuras se podrían incorporar:
 
 - Persistencia de usuarios.
-- Historial de mensajes.
 - Base de datos.
+- Historial de mensajes.
 - Recuperación automática de sesión.
-- Salas privadas.
+- Salas de chat.
 - Mensajes privados.
-- Autenticación mediante usuario y contraseña.
+- Autenticación.
 - Avatares.
 - Indicador de usuario escribiendo.
-- Fecha completa visible en los mensajes.
 - Notificaciones.
 - Mejor manejo de reconexiones.
 - Panel de administración.
@@ -543,22 +584,19 @@ Como posibles mejoras se podrían implementar:
 
 El proyecto fue desarrollado utilizando Git como sistema de control de versiones local.
 
-Durante el desarrollo se realizaron distintos commits para representar la evolución del proyecto.
+Los commits realizados durante el desarrollo permiten observar la evolución progresiva de la aplicación.
 
-## Commits
-
-> Los IDs de esta tabla deben reemplazarse por los IDs reales obtenidos mediante `git log --oneline`.
+## Commits realizados
 
 | Commit | Cambios realizados |
 |---|---|
-| `ID-COMMIT-01` | Creación de la estructura inicial y configuración del servidor |
-| `ID-COMMIT-02` | Creación de la interfaz inicial del chat |
-| `ID-COMMIT-03` | Registro de usuarios y eventos de conexión y desconexión |
-| `ID-COMMIT-04` | Implementación de mensajes en tiempo real |
-| `ID-COMMIT-05` | Mejora de interfaz y estado de conexión |
-| `ID-COMMIT-06` | Aplicación de tema oscuro minimalista |
+| `a8df482` | Creación de la estructura inicial y configuración del servidor |
+| `bddc5f5` | Creación de la interfaz inicial del chat |
+| `4103028` | Registro de usuarios y eventos de conexión y desconexión |
+| `96cbd61` | Implementación de mensajes en tiempo real |
+| `87963dd` | Aplicación de tema oscuro minimalista |
 
-Para consultar el historial:
+El historial puede consultarse mediante:
 
 ```bash
 git log --oneline
@@ -568,7 +606,7 @@ git log --oneline
 
 # Tags
 
-Se utilizarán tags de Git para identificar versiones importantes del desarrollo.
+Se utilizaron tags para marcar versiones importantes del proyecto.
 
 | Tag | Descripción |
 |---|---|
@@ -576,7 +614,11 @@ Se utilizarán tags de Git para identificar versiones importantes del desarrollo
 | `v0.5.0` | Chat funcional con usuarios y mensajes |
 | `v1.0.0` | Versión final del chat |
 
-Los tags se mantienen únicamente en el repositorio Git local.
+Los tags pueden visualizarse mediante:
+
+```bash
+git tag
+```
 
 ---
 
@@ -591,10 +633,12 @@ Práctica Profesional III
 
 # Conclusión
 
-El proyecto permitió implementar un sistema de comunicación en tiempo real utilizando Node.js y Socket.IO.
+El proyecto permitió desarrollar un sistema de chat en tiempo real utilizando Node.js, Express y Socket.IO.
 
-A través del uso de eventos se logró establecer comunicación bidireccional entre el frontend y el backend, permitiendo registrar usuarios, mantener una lista de conexiones activas, enviar mensajes y detectar desconexiones.
+Mediante el uso de eventos se implementó una comunicación bidireccional entre frontend y backend, permitiendo registrar usuarios, mantener una lista de conexiones activas, enviar mensajes y detectar desconexiones.
 
-El uso de `socket.id` permite identificar de manera única cada conexión, mientras que Git permite mantener documentada la evolución del desarrollo.
+El uso de `socket.id` permite identificar de manera única cada conexión, incluso cuando dos personas utilizan el mismo nombre.
 
-El proyecto puede ser instalado y ejecutado por otra persona utilizando las instrucciones incluidas en este README.
+Además, Git permitió registrar de forma progresiva la evolución del desarrollo mediante commits y tags.
+
+El proyecto puede ser instalado y ejecutado por otra persona siguiendo las instrucciones incluidas en este README.
