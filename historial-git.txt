@@ -1,0 +1,9 @@
+72beb08 (HEAD -> master, tag: v1.0.0) 07 - Incorporacion de capturas de funcionamiento
+ff9ef69 06 - Documentacion completa del proyecto
+5be45d5 06 - Ajustes finales de interfaz y configuracion
+e30e117 06 - Documentacion completa del proyecto
+87963dd 05 - Aplicacion de tema oscuro minimalista
+96cbd61 (tag: v0.5.0) 04 - Implementacion de mensajes en tiempo real
+4103028 03 - Registro de usuarios y eventos de conexion y desconexion
+bddc5f5 (tag: v0.1.0) 02 - Creacion de la interfaz inicial del chat
+a8df482 01 - Estructura inicial y configuracion del servidor
